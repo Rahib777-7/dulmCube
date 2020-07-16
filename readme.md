@@ -1,17 +1,5 @@
-ClassiCube is a custom Minecraft Classic and ClassiCube client written in C that works on Windows, OSX, Linux, BSD, Solaris, Haiku, and in a browser.
-**It is not affiliated with (or supported by) Mojang AB, Minecraft, or Microsoft in any way.**
-
-![screenshot_n](http://i.imgur.com/FCiwl27.png)
-
-
-You can grab the latest stable binaries [from here](https://www.classicube.net/download/) and the very latest builds [from here](https://www.classicube.net/nightlies/).
-
-#### What ClassiCube is
-* A complete re-implementation of Minecraft Classic, with optional additions.
-* Lightweight, minimal memory usage compared to the vanilla client.
-* Works with effectively all graphics cards that support OpenGL or Direct3D 9.
-
-It **does not** work with 'modern/premium' Minecraft servers.
+dulmCube is a custom dulmCube client that does not require an account to play on dulmCube's multiplayer. dulmCube also has its own soundtrack and textures.
+''It is not affiliated with (or supported by) Mojang AB, Minecraft, or Microsoft in any way.''
 
 #### Requirements
 * Windows: 2000 or later. (Windows 98 with KernelEx also *technically* works)
@@ -21,14 +9,14 @@ It **does not** work with 'modern/premium' Minecraft servers.
 **Note:** When running from within VirtualBox, disable Mouse Integration, otherwise the camera will not work propery.
 
 #### Instructions
-Initially, you will need to run ClassiCube.exe to download the required assets from minecraft.net. 
+Initially, you will need to run dulmCube.exe to download the required assets from minecraft.net. 
 Just click 'OK' to the dialog menu that appears when you start the launcher.
 
 **Singleplayer**
-Run ClassiCube.exe, then click Singleplayer at the main menu.
+Run dulmCube.exe, then click Singleplayer at the main menu.
 
 **Multiplayer**
-Run ClassiCube.exe. You can connect to LAN/locally hosted servers, ~~minecraft.net servers,~~ and classicube.net servers through the launcher.
+Run dulmCube.exe. You can connect to LAN/locally hosted servers or dulmCube servers through the launcher.
 
 ###### *Windows specific*
 *If you are stuck using the built-in OpenGL 1.1 software renderer, you can use the MESA software renderer from [here](http://download.qt.io/development_releases/prebuilt/llvmpipe/windows/) for slightly better performance. Typically though, this occurs because you have not installed GPU drivers.*
@@ -36,28 +24,28 @@ Run ClassiCube.exe. You can connect to LAN/locally hosted servers, ~~minecraft.n
 ### Compiling - Windows
 
 ##### Using Visual Studio
-Open ClassiCube.sln and compile it.
+Open dulmCube.sln and compile it.
 
 If you get a ```The Windows SDK version 5.1 was not found``` compilation error, [see here for how to fix](doc/compile-fixes.md#visual-studio-unsupported-platform-toolset)
 
 ##### Using Visual Studio (command line)
 1. Use 'Developer Tools for Visual Studio' from Start Menu
 2. Navigate to directory with game's source code
-3. Enter `cl.exe *.c /link user32.lib gdi32.lib crypt32.lib ws2_32.lib wininet.lib winmm.lib dbghelp.lib d3d9.lib shell32.lib /out:ClassiCube.exe`
+3. Enter `cl.exe *.c /link user32.lib gdi32.lib crypt32.lib ws2_32.lib wininet.lib winmm.lib dbghelp.lib d3d9.lib shell32.lib /out:dulmCube.exe`
 
 ##### Using MinGW-w64
 I am assuming you used the installer from https://sourceforge.net/projects/mingw-w64/
 1. Install MinGW-W64
 2. Use either *Run Terminal* from Start Menu or run *mingw-w64.bat* in the installation folder
 3. Navigate to directory with game's source code
-4. Enter `gcc *.c -o ClassiCube.exe -mwindows -lws2_32 -lwininet -lwinmm -limagehlp -lcrypt32 -ld3d9`
+4. Enter `gcc *.c -o dulmCube.exe -mwindows -lws2_32 -lwininet -lwinmm -limagehlp -lcrypt32 -ld3d9`
 
 ##### Using MinGW
 I am assuming you used the installer from http://www.mingw.org/
 1. Install MinGW. You need mingw32-base-bin and msys-base-bin packages.
 2. Run *msys.bat* in the *C:\MinGW\msys\1.0* folder.
 3. Navigate to directory with game's source code
-4. Enter `gcc *.c -o ClassiCube.exe -mwindows -lws2_32 -lwininet -lwinmm -limagehlp -lcrypt32 -ld3d9`
+4. Enter `gcc *.c -o dulmCube.exe -mwindows -lws2_32 -lwininet -lwinmm -limagehlp -lcrypt32 -ld3d9`
 
 ### Compiling - Linux
 
@@ -65,50 +53,50 @@ I am assuming you used the installer from http://www.mingw.org/
 
 Install appropriate libs as required. For ubuntu these are: libx11-dev, libxi-dev and libgl1-mesa-dev
 
-```gcc *.c -o ClassiCube -lm -lpthread -lX11 -lXi -lGL -ldl```
+```gcc *.c -o dulmCube -lm -lpthread -lX11 -lXi -lGL -ldl```
 
 ##### Cross compiling for windows:
 
-```i686-w64-mingw32-gcc *.c -o ClassiCube.exe -mwindows -lws2_32 -lwininet -lwinmm -limagehlp -lcrypt32 -ld3d9```
+```i686-w64-mingw32-gcc *.c -o dulmCube.exe -mwindows -lws2_32 -lwininet -lwinmm -limagehlp -lcrypt32 -ld3d9```
 
 ##### Raspberry pi
 Although the regular linux compiliation flags will work fine, to take full advantage of the hardware:
 
-```gcc *.c -o ClassiCube -DCC_BUILD_RPI -lm -lpthread -lX11 -lEGL -lGLESv2 -ldl```
+```gcc *.c -o dulmCube -DCC_BUILD_RPI -lm -lpthread -lX11 -lEGL -lGLESv2 -ldl```
 
 ### Compiling - macOS
 
 ##### Using gcc/clang (32 bit)
 
-```cc *.c -o ClassiCube -framework Carbon -framework AGL -framework OpenGL```
+```cc *.c -o dulmCube -framework Carbon -framework AGL -framework OpenGL```
 
 ##### Using gcc/clang (64 bit)
 
-```cc *.c -o ClassiCube -framework Cocoa -framework OpenGL -lobjc```
+```cc *.c -o dulmCube -framework Cocoa -framework OpenGL -lobjc```
 
 ### Compiling - other desktop OSes
 
 #### FreeBSD
 
-```clang *.c -o ClassiCube -I /usr/local/include -L /usr/local/lib -lm -lpthread -lX11 -lXi -lGL -lexecinfo```
+```clang *.c -o dulmCube -I /usr/local/include -L /usr/local/lib -lm -lpthread -lX11 -lXi -lGL -lexecinfo```
 
 #### OpenBSD
 
 Install libexecinfo, curl and openal package if needed.
 
-```cc *.c -o ClassiCube -I /usr/X11R6/include -I /usr/local/include -L /usr/X11R6/lib -L /usr/local/lib -lm -lpthread -lX11 -lXi -lGL -lexecinfo```
+```cc *.c -o dulmCube -I /usr/X11R6/include -I /usr/local/include -L /usr/X11R6/lib -L /usr/local/lib -lm -lpthread -lX11 -lXi -lGL -lexecinfo```
 
 #### NetBSD
 
-```gcc *.c -o ClassiCube -I /usr/X11R7/include -I /usr/pkg/include -L /usr/X11R7/lib -L /usr/pkg/lib  -lpthread -lX11 -lXi -lGL -lexecinfo```
+```gcc *.c -o dulmCube -I /usr/X11R7/include -I /usr/pkg/include -L /usr/X11R7/lib -L /usr/pkg/lib  -lpthread -lX11 -lXi -lGL -lexecinfo```
 
 #### DragonflyBSD
 
-```gcc *.c -o ClassiCube -I /usr/local/include -L /usr/local/lib -lm -lpthread -lX11 -lXi -lGL -lexecinfo```
+```gcc *.c -o dulmCube -I /usr/local/include -L /usr/local/lib -lm -lpthread -lX11 -lXi -lGL -lexecinfo```
 
 #### Solaris
 
-```gcc *.c -o ClassiCube -lm -lsocket -lX11 -lXi -lGL```
+```gcc *.c -o dulmCube -lm -lsocket -lX11 -lXi -lGL```
 
 NOTE: You have to change entry->d_type == DT_DIR to Directory_Exists(&path) (TODO do this automatically)
 
@@ -116,7 +104,7 @@ NOTE: You have to change entry->d_type == DT_DIR to Directory_Exists(&path) (TOD
 
 Install libsdl2_devel, openal_devel, and libexecinfo_devel package if needed.
 
-```gcc *.c -o ClassiCube -lm -lexecinfo -lGL -lnetwork -lSDL2```
+```gcc *.c -o dulmCube -lm -lexecinfo -lGL -lnetwork -lSDL2```
 
 NOTE: You have to change entry->d_type == DT_DIR to Directory_Exists(&path) (TODO do this automatically)
 
