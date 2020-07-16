@@ -300,11 +300,11 @@ void Launcher_Run(void) {
 /*########################################################################################################################*
 *---------------------------------------------------------Colours/Skin----------------------------------------------------*
 *#########################################################################################################################*/
-#define DEFAULT_BACKGROUND_COL         BitmapCol_Make(153, 127, 172, 255)
-#define DEFAULT_BUTTON_BORDER_COL      BitmapCol_Make( 97,  81, 110, 255)
-#define DEFAULT_BUTTON_FORE_ACTIVE_COL BitmapCol_Make(189, 168, 206, 255)
-#define DEFAULT_BUTTON_FORE_COL        BitmapCol_Make(141, 114, 165, 255)
-#define DEFAULT_BUTTON_HIGHLIGHT_COL   BitmapCol_Make(162, 131, 186, 255)
+#define DEFAULT_BACKGROUND_COL         BitmapCol_Make( 34,  51,  85, 255)
+#define DEFAULT_BUTTON_BORDER_COL      BitmapCol_Make(255, 255, 255, 255)
+#define DEFAULT_BUTTON_FORE_ACTIVE_COL BitmapCol_Make( 51,  51,  17, 255)
+#define DEFAULT_BUTTON_FORE_COL        BitmapCol_Make( 17,  34,  51, 255)
+#define DEFAULT_BUTTON_HIGHLIGHT_COL   BitmapCol_Make( 34,  51,  17, 255)
 
 BitmapCol Launcher_BackgroundCol       = DEFAULT_BACKGROUND_COL;
 BitmapCol Launcher_ButtonBorderCol     = DEFAULT_BUTTON_BORDER_COL;
@@ -481,8 +481,8 @@ void Launcher_ResetArea(int x, int y, int width, int height) {
 }
 
 void Launcher_ResetPixels(void) {
-	static const String title_fore = String_FromConst("&eClassi&fCube");
-	static const String title_back = String_FromConst("&0Classi&0Cube");
+	static const String title_fore = String_FromConst("&7dulm&bCube");
+	static const String title_back = String_FromConst("&0dulm&0Cube");
 	struct DrawTextArgs args;
 	int x;
 
