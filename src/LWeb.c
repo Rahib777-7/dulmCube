@@ -383,7 +383,7 @@ void FetchServerTask_Run(const String* hash) {
 	LWebTask_Reset(&FetchServerTask.Base);
 	ServerInfo_Init(&FetchServerTask.server);
 	String_InitArray(url, urlBuffer);
-	String_Format1(&url, "https://www.classicube.net/api/server/%s", hash);
+	String_Format1(&url, "http://dulm.blue/cube/server/fetch.php?s=%s", hash);
 
 	FetchServerTask.Base.identifier = id;
 	Http_AsyncGetDataEx(&url, false, &id, NULL, NULL, &ccCookies);
@@ -430,7 +430,7 @@ static void FetchServersTask_Handle(cc_uint8* data, cc_uint32 len) {
 
 void FetchServersTask_Run(void) {
 	static const String id  = String_FromConst("CC fetch servers");
-	static const String url = String_FromConst("https://www.classicube.net/api/servers");
+	static const String url = String_FromConst("http://dulm.blue/cube/server/list.json");
 	if (FetchServersTask.Base.working) return;
 	LWebTask_Reset(&FetchServersTask.Base);
 
@@ -594,7 +594,7 @@ static void FetchFlagsTask_DownloadNext(void) {
 	if (FetchFlagsTask.count == flagsCount) return;
 
 	LWebTask_Reset(&FetchFlagsTask.Base);
-	String_Format2(&url, "http://static.classicube.net/img/flags/%r%r.png",
+	String_Format2(&url, "http://dulm.blue/cube/img/flags/%r%r.png",
 			&flags[FetchFlagsTask.count].country[0], &flags[FetchFlagsTask.count].country[1]);
 
 	FetchFlagsTask.Base.identifier = id;
