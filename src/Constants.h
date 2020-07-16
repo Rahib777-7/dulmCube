@@ -9,14 +9,14 @@
 #define GAME_API_VER 1
 
 #if defined CC_BUILD_WEB
-#define GAME_APP_NAME  "ClassiCube web client"
-#define GAME_APP_TITLE "ClassiCube"
+#define GAME_APP_NAME  "dulmCube web client"
+#define GAME_APP_TITLE "dulmCube"
 #elif defined CC_BUILD_COCOA
-#define GAME_APP_NAME  "ClassiCube 1.1.7 alpha"
-#define GAME_APP_TITLE "ClassiCube 1.1.7 alpha"
+#define GAME_APP_NAME  "dulmCube 0.1 Alpha"
+#define GAME_APP_TITLE "dulmCube 0.1 alpha"
 #else
-#define GAME_APP_NAME  "ClassiCube 1.1.7"
-#define GAME_APP_TITLE "ClassiCube 1.1.7"
+#define GAME_APP_NAME  "dulmCube 0.1"
+#define GAME_APP_TITLE "dulmCube 0.1"
 #endif
 
 /* Max number of characters strings can have. */
