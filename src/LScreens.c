@@ -267,7 +267,7 @@ static void ChooseModeScreen_Init(struct LScreen* s_) {
 
 	LButton_Init(s_, &s->btnClassic, 145, 35, "Classic");
 	LLabel_Init(s_,  &s->lblClassic[0], "&eOnly uses blocks and features from");
-	LLabel_Init(s_,  &s->lblClassic[1], "&ethe original minecraft classic");
+	LLabel_Init(s_,  &s->lblClassic[1], "&ethe original Minecraft Classic");
 
 	LLabel_Init(s_,  &s->lblHelp, "&eClick &fEnhanced &eif you're not sure which mode to choose.");
 	LButton_Init(s_, &s->btnBack, 80, 35, "Back");
@@ -621,8 +621,8 @@ struct LScreen* DirectConnectScreen_MakeInstance(void) {
 *#########################################################################################################################*/
 static struct MainScreen {
 	LScreen_Layout
-	struct LButton btnLogin, btnResume, btnDirect, btnSPlayer, btnOptions, btnRegister;
-	struct LInput iptUsername, iptPassword;
+	struct LButton btnLogin, btnResume, btnDirect, btnSPlayer, btnOptions;
+	struct LInput iptUsername;
 	struct LLabel lblStatus, lblUpdate;
 	struct LWidget* _widgets[10];
 	cc_bool signingIn;
@@ -669,32 +669,23 @@ CC_NOINLINE static void MainScreen_Error(struct LWebTask* task, const char* acti
 static void MainScreen_Login(void* w, int x, int y) {
 	struct MainScreen* s = &MainScreen_Instance;
 	String* user = &s->iptUsername.text;
-	String* pass = &s->iptPassword.text;
 
 	if (!user->length) {
 		LLabel_SetConst(&s->lblStatus, "&eUsername required");
 		LWidget_Redraw(&s->lblStatus); return;
 	}
-	if (!pass->length) {
-		LLabel_SetConst(&s->lblStatus, "&ePassword required");
-		LWidget_Redraw(&s->lblStatus); return;
-	}
 
-	if (GetTokenTask.Base.working) return;
+	if (FetchServersTask.Base.working) return;
 	Options_Set("launcher-cc-username", user);
-	Options_SetSecure("launcher-cc-password", pass, user);
 
-	GetTokenTask_Run();
-	LLabel_SetConst(&s->lblStatus, "&eSigning in..");
+	FetchServersTask_Run();
+	static char userBuffer[STRING_SIZE]; 
+	String_InitArray(SignInTask.username, userBuffer);
+	String_Copy(&SignInTask.username, user);
+	LLabel_SetConst(&s->lblStatus, "&eLoading server list...");
 	LWidget_Redraw(&s->lblStatus);
 	s->signingIn = true;
 }
-
-static void MainScreen_Register(void* w, int x, int y) {
-	static const String ccUrl = String_FromConst("https://www.classicube.net/acc/register/");
-	Process_StartOpen(&ccUrl);
-}
-
 static void MainScreen_Resume(void* w, int x, int y) {
 	struct ResumeInfo info;
 	MainScreen_GetResume(&info, true);
@@ -714,7 +705,7 @@ static void MainScreen_Singleplayer(void* w, int x, int y) {
 static cc_bool MainScreen_PasswordFilter(char c) { return true; }
 
 static void MainScreen_Init(struct LScreen* s_) {
-	String user, pass; char passBuffer[STRING_SIZE];
+	String user; char passBuffer[STRING_SIZE];
 	struct MainScreen* s = (struct MainScreen*)s_;
 
 	/* status should reset after user has gone to another menu */
@@ -722,56 +713,46 @@ static void MainScreen_Init(struct LScreen* s_) {
 	if (s->numWidgets) return;
 	s->widgets = s->_widgets;
 
-	LInput_Init(s_, &s->iptUsername, 280, "&gUsername..");
-	LInput_Init(s_, &s->iptPassword, 280, "&gPassword..");
+	LInput_Init(s_, &s->iptUsername, 280, "&gPlayer name..");
 
-	LButton_Init(s_, &s->btnLogin, 100, 35, "Sign in");
+	LButton_Init(s_, &s->btnLogin, 150, 35, "Server List");
 	LLabel_Init(s_,  &s->lblStatus, "");
 
-	LButton_Init(s_, &s->btnResume,  100, 35, "Resume");
+	LButton_Init(s_, &s->btnResume,  150, 35, "Resume");
 	LButton_Init(s_, &s->btnDirect,  200, 35, "Direct connect");
 	LButton_Init(s_, &s->btnSPlayer, 200, 35, "Singleplayer");
 
 	LLabel_Init(s_,  &s->lblUpdate, "");
 	LButton_Init(s_, &s->btnOptions,  100, 35, "Options");
-	LButton_Init(s_, &s->btnRegister, 100, 35, "Register");
 	
 	s->btnLogin.OnClick    = MainScreen_Login;
 	s->btnResume.OnClick   = MainScreen_Resume;
 	s->btnDirect.OnClick   = SwitchToDirectConnect;
 	s->btnSPlayer.OnClick  = MainScreen_Singleplayer;
 	s->btnOptions.OnClick  = SwitchToSettings;
-	s->btnRegister.OnClick = MainScreen_Register;
 
 	/* need to set text here for right size */
 	s->lblUpdate.font = &Launcher_HintFont;
 	LLabel_SetConst(&s->lblUpdate, "&eChecking..");
-	s->iptPassword.password   = true;
-	s->iptPassword.TextFilter = MainScreen_PasswordFilter;
 	
-	String_InitArray(pass, passBuffer);
 	Options_UNSAFE_Get("launcher-cc-username", &user);
-	Options_GetSecure("launcher-cc-password", &pass, &user);
 
 	LInput_SetText(&s->iptUsername, &user);
-	LInput_SetText(&s->iptPassword, &pass);
 }
 
 static void MainScreen_Layout(struct LScreen* s_) {
 	struct MainScreen* s = (struct MainScreen*)s_;
 	LWidget_SetLocation(&s->iptUsername, ANCHOR_CENTRE_MIN, ANCHOR_CENTRE, -140, -120);
-	LWidget_SetLocation(&s->iptPassword, ANCHOR_CENTRE_MIN, ANCHOR_CENTRE, -140,  -75);
 
-	LWidget_SetLocation(&s->btnLogin,  ANCHOR_CENTRE, ANCHOR_CENTRE, -90, -25);
-	LWidget_SetLocation(&s->lblStatus, ANCHOR_CENTRE, ANCHOR_CENTRE,   0,  20);
+	LWidget_SetLocation(&s->btnLogin,  ANCHOR_CENTRE, ANCHOR_CENTRE, -90, -75);
+	LWidget_SetLocation(&s->lblStatus, ANCHOR_CENTRE, ANCHOR_CENTRE,   0, -30);
 
-	LWidget_SetLocation(&s->btnResume,  ANCHOR_CENTRE, ANCHOR_CENTRE, 90, -25);
+	LWidget_SetLocation(&s->btnResume,  ANCHOR_CENTRE, ANCHOR_CENTRE, 90, -75);
 	LWidget_SetLocation(&s->btnDirect,  ANCHOR_CENTRE, ANCHOR_CENTRE,  0,  60);
 	LWidget_SetLocation(&s->btnSPlayer, ANCHOR_CENTRE, ANCHOR_CENTRE,  0, 110);
 
 	LWidget_SetLocation(&s->lblUpdate,  ANCHOR_MAX, ANCHOR_MAX,  10,  45);
 	LWidget_SetLocation(&s->btnOptions, ANCHOR_MAX, ANCHOR_MAX,   6,   6);
-	LWidget_SetLocation(&s->btnRegister, ANCHOR_MIN, ANCHOR_MAX,  6,   6);
 }
 
 static void MainScreen_HoverWidget(struct LScreen* s_, struct LWidget* w) {
@@ -841,7 +822,7 @@ static void MainScreen_TickGetToken(struct MainScreen* s) {
 	if (!GetTokenTask.Base.completed) return;
 
 	if (GetTokenTask.Base.success) {
-		SignInTask_Run(&s->iptUsername.text, &s->iptPassword.text);
+		SignInTask_Run(&s->iptUsername.text, &String_Empty);
 	} else {
 		MainScreen_Error(&GetTokenTask.Base, "signing in");
 	}
@@ -1176,7 +1157,7 @@ static void ServersScreen_InitWidgets(struct LScreen* s_) {
 	s->widgets = s->_widgets;
 
 	LInput_Init(s_, &s->iptSearch, 370, "&gSearch servers..");
-	LInput_Init(s_, &s->iptHash,   475, "&gclassicube.net/server/play/...");
+	LInput_Init(s_, &s->iptHash,   475, "&gServer hash..");
 
 	LButton_Init(s_, &s->btnBack,    110, 30, "Back");
 	LButton_Init(s_, &s->btnConnect, 130, 30, "Connect");
@@ -1318,13 +1299,13 @@ static void SettingsScreen_Init(struct LScreen* s_) {
 	s->widgets = s->_widgets;
 
 	LButton_Init(s_, &s->btnUpdates, 110, 35, "Updates");
-	LLabel_Init(s_,  &s->lblUpdates, "&eGet the latest stuff");
+	LLabel_Init(s_,  &s->lblUpdates, "&7Get the latest stuff");
 
 	LButton_Init(s_, &s->btnMode, 110, 35, "Mode");
-	LLabel_Init(s_,  &s->lblMode, "&eChange the enabled features");
+	LLabel_Init(s_,  &s->lblMode, "&7Change the enabled features");
 
 	LButton_Init(s_, &s->btnColours, 110, 35, "Colours");
-	LLabel_Init(s_,  &s->lblColours, "&eChange how the launcher looks");
+	LLabel_Init(s_,  &s->lblColours, "&7Change how the launcher looks");
 
 	LButton_Init(s_, &s->btnBack, 80, 35, "Back");
 
